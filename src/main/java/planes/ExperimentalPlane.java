@@ -1,7 +1,9 @@
-package Planes;
+package planes;
 
 import models.ClassificationLevel;
 import models.ExperimentalTypes;
+
+import java.util.Objects;
 
 public class ExperimentalPlane extends Plane {
 
@@ -32,18 +34,28 @@ public class ExperimentalPlane extends Plane {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (this == o) return true;
+        if (!(o instanceof ExperimentalPlane))
+            return false;
+        ExperimentalPlane experimentalPlane = (ExperimentalPlane) o;
+        return classificationLevel == experimentalPlane.getClassificationLevel() &&
+                experimentalTypes == experimentalPlane.getExperimentalTypes();
+
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(super.hashCode(), experimentalTypes, classificationLevel);
     }
 
     @Override
     public String toString() {
         return "experimentalPlane{" +
                 "model='" + getModel() + '\'' +
+                "experimentalPlane{" +
+                "classfication level='" + getClassificationLevel() + '\'' +
+                "experimental types='" +
+                getExperimentalTypes() + '\'' +
                 '}';
     }
 }

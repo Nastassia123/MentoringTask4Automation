@@ -1,4 +1,4 @@
-package Planes;
+package planes;
 
 import models.MilitaryType;
 
@@ -8,8 +8,8 @@ public class MilitaryPlane extends Plane {
 
     private MilitaryType militaryType;
 
-    public MilitaryPlane(String planemodel, int maxSpeed, int maxFlightDistance, int maxLoadCapacity, MilitaryType militaryType) {
-        super(planemodel, maxSpeed, maxFlightDistance, maxLoadCapacity);
+    public MilitaryPlane(String planeModel, int maxSpeed, int maxFlightDistance, int maxLoadCapacity, MilitaryType militaryType) {
+        super(planeModel, maxSpeed, maxFlightDistance, maxLoadCapacity);
         this.militaryType = militaryType;
     }
 
