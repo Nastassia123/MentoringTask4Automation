@@ -1,7 +1,7 @@
-import Planes.ExperimentalPlane;
-import Planes.MilitaryPlane;
-import Planes.PassengerPlane;
-import Planes.Plane;
+import planes.ExperimentalPlane;
+import planes.MilitaryPlane;
+import planes.PassengerPlane;
+import planes.Plane;
 import exceptions.NonMilitaryPlainException;
 import models.ClassificationLevel;
 import models.ExperimentalTypes;
@@ -58,13 +58,13 @@ public class AirportTest {
     @Test
     public void testNextPlaneMaxLoadCapacityIsHigherThanCurrent() throws NonMilitaryPlainException {
         Airport airport = new Airport(planes);
-        airport.sortByMaxLoadCapacity();
+        airport.sortByMaxLoadCapacity(planes);
         List<? extends Plane> planesSortedByMaxLoadCapacity = airport.getPlanes();
         boolean nextPlaneMaxLoadCapacityIsHigherThanCurrent = true;
         for (int i = 0; i < planesSortedByMaxLoadCapacity.size() - 1; i++) {
             Plane currentPlane = planesSortedByMaxLoadCapacity.get(i);
             Plane nextPlane = planesSortedByMaxLoadCapacity.get(i + 1);
-            if (currentPlane.getMinLoadCapacity() > nextPlane.getMinLoadCapacity()) {
+            if (currentPlane.getMaxLoadCapacity() > nextPlane.getMaxLoadCapacity()) {
                 nextPlaneMaxLoadCapacityIsHigherThanCurrent = false;
                 Assert.fail("Test failed!");
                 break;
