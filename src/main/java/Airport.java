@@ -43,8 +43,6 @@ public class Airport {
     public List<MilitaryPlane> addPlaneIfItIsMilitary(Plane plane, List<MilitaryPlane> militaryPlanes) {
         if (plane instanceof MilitaryPlane) {
             militaryPlanes.add((MilitaryPlane) plane);
-        } else {
-            LOGGER.info("Plane is not military");
         }
         return militaryPlanes;
     }
