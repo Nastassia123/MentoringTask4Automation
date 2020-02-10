@@ -1,11 +1,13 @@
-import Planes.MilitaryPlane;
-import Planes.PassengerPlane;
-import Planes.Plane;
 import exceptions.NonMilitaryPlainException;
 import models.MilitaryType;
+import planes.MilitaryPlane;
+import planes.PassengerPlane;
+import planes.Plane;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class Runner {
     static List<Plane> planes = Arrays.asList(
@@ -25,17 +27,21 @@ public class Runner {
             new MilitaryPlane("C-130 Hercules", 650, 5000, 110000, MilitaryType.TRANSPORT)
     );
 
-    public static void main(String[] args) throws NonMilitaryPlainException {
-        Airport airport = new Airport(planes);
-        Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
-        Airport passengerAirport = new Airport(airport.getPassengersPlane());
-        System.out.println("Military airport sorted by max distance: " + militaryAirport
-                .sortByMaxDistance()
-                .toString());
-        System.out.println("Passenger airport sorted by max speed: " + passengerAirport
-                .sortByMaxSpeed()
-                .toString());
-
-        System.out.println("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
+    public static void main(String[] args) {
+        try {
+            Airport airport = new Airport(planes);
+            Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
+            Airport passengerAirport = new Airport(airport.getPassengersPlane());
+            LOGGER.info("Military airport sorted by max distance: " + militaryAirport
+                    .sortByMaxDistance(planes)
+                    .toString());
+            LOGGER.info("Passenger airport sorted by max speed: " + passengerAirport
+                    .sortByMaxSpeed(planes)
+                    .toString());
+            LOGGER.info("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
+        } catch (NonMilitaryPlainException e) {
+            LOGGER.info(e.getMessage());
+        }
     }
+
 }

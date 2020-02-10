@@ -1,11 +1,13 @@
-import Planes.ExperimentalPlane;
-import Planes.MilitaryPlane;
-import Planes.PassengerPlane;
-import Planes.Plane;
 import exceptions.NonMilitaryPlainException;
 import models.MilitaryType;
+import planes.ExperimentalPlane;
+import planes.MilitaryPlane;
+import planes.PassengerPlane;
+import planes.Plane;
 
 import java.util.*;
+
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 
 public class Airport {
@@ -13,32 +15,46 @@ public class Airport {
 
 
     public List<PassengerPlane> getPassengersPlane() {
-        List<? extends Plane> planesList = this.planes;
         List<PassengerPlane> passengersPlaneList = new ArrayList<>();
-        for (Plane plane : planesList) {
-            if (plane instanceof PassengerPlane) {
-                passengersPlaneList.add((PassengerPlane) plane);
-            }
+        for (Plane plane : planes) {
+            addPlaneIfItIsPassenger(plane, passengersPlaneList);
         }
         return passengersPlaneList;
     }
 
+    public List<PassengerPlane> addPlaneIfItIsPassenger(Plane plane, List<PassengerPlane> passengerPlaneList) {
+        if (plane instanceof PassengerPlane) {
+            passengerPlaneList.add((PassengerPlane) plane);
+        } else {
+            LOGGER.info("Plane is not passenger");
+        }
+        return passengerPlaneList;
+    }
+
+
     public List<MilitaryPlane> getMilitaryPlanes() throws NonMilitaryPlainException {
         List<MilitaryPlane> militaryPlanes = new ArrayList<MilitaryPlane>();
         for (Plane plane : planes) {
-            if (plane instanceof MilitaryPlane) {
-                militaryPlanes.add((MilitaryPlane) plane);
-            } else {
-                throw new NonMilitaryPlainException("Plane is not military");
-            }
+            addPlaneIfItIsMilitary(plane, militaryPlanes);
         }
         return militaryPlanes;
     }
 
-    public PassengerPlane getPassengerPlaneWithMaxPassengersCapacity() {
+    public List<MilitaryPlane> addPlaneIfItIsMilitary(Plane plane, List<MilitaryPlane> militaryPlanes) {
+        if (plane instanceof MilitaryPlane) {
+            militaryPlanes.add((MilitaryPlane) plane);
+        }
+        return militaryPlanes;
+    }
+
+    public PassengerPlane getPassengerPlaneWithMaxPassengersCapacity() throws NonMilitaryPlainException {
         List<PassengerPlane> passengerPlanes = getPassengersPlane();
         PassengerPlane planeWithMaxCapacity = passengerPlanes.get(0);
-        for (int i = 0; i < passengerPlanes.size(); i++) {
+        return findInCyclePlaneWithMaxCapacity(passengerPlanes, planeWithMaxCapacity);
+    }
+
+    public PassengerPlane findInCyclePlaneWithMaxCapacity(List<PassengerPlane> passengerPlanes, PassengerPlane planeWithMaxCapacity) throws NonMilitaryPlainException {
+        for (int i = 0; i < getPassengersPlane().size(); i++) {
             if (passengerPlanes.get(i).getPassengersCapacity() > planeWithMaxCapacity.getPassengersCapacity()) {
                 planeWithMaxCapacity = passengerPlanes.get(i);
             }
@@ -46,10 +62,16 @@ public class Airport {
         return planeWithMaxCapacity;
     }
 
+
     public List<MilitaryPlane> getTransportMilitaryPlanes() throws NonMilitaryPlainException {
         List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
         List<MilitaryPlane> transportMilitaryPlanes = new ArrayList<>();
-        for (int i = 0; i < militaryPlanes.size(); i++) {
+        return findInCycleMilitaryPlane(militaryPlanes, transportMilitaryPlanes);
+    }
+
+
+    public List<MilitaryPlane> findInCycleMilitaryPlane(List<MilitaryPlane> militaryPlanes, List<MilitaryPlane> transportMilitaryPlanes) throws NonMilitaryPlainException {
+        for (int i = 0; i < getMilitaryPlanes().size(); i++) {
             MilitaryPlane plane = militaryPlanes.get(i);
             if (plane.getType() == MilitaryType.TRANSPORT) {
                 transportMilitaryPlanes.add(plane);
@@ -61,18 +83,29 @@ public class Airport {
     public List<MilitaryPlane> getBomberMilitaryPlanes() throws NonMilitaryPlainException {
         List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
         List<MilitaryPlane> bomberMilitaryPlanes = new ArrayList<>();
-        for (int i = 0; i < militaryPlanes.size(); i++) {
-            MilitaryPlane plane = militaryPlanes.get(i);
-            if (plane.getType() == MilitaryType.BOMBER) {
-                bomberMilitaryPlanes.add(plane);
+        return findInCycleBomberMilitaryPlanes(militaryPlanes, bomberMilitaryPlanes);
+    }
+
+
+    public List<MilitaryPlane> findInCycleBomberMilitaryPlanes(List<MilitaryPlane> militaryPlanes, List<MilitaryPlane> bomberMilitaryPlanes) throws NonMilitaryPlainException {
+        {
+            for (int i = 0; i < getMilitaryPlanes().size(); i++) {
+                MilitaryPlane plane = militaryPlanes.get(i);
+                if (plane.getType() == MilitaryType.BOMBER) {
+                    bomberMilitaryPlanes.add(plane);
+                }
             }
         }
         return bomberMilitaryPlanes;
-
     }
+
 
     public List<ExperimentalPlane> getExperimentalPlanes() {
         List<ExperimentalPlane> experimentalPlanes = new ArrayList<>();
+        return findInCycleExperimentalPlanes(experimentalPlanes);
+    }
+
+    public List<ExperimentalPlane> findInCycleExperimentalPlanes(List<ExperimentalPlane> experimentalPlanes) {
         for (Plane plane : planes) {
             if (plane instanceof ExperimentalPlane) {
                 experimentalPlanes.add((ExperimentalPlane) plane);
@@ -81,33 +114,43 @@ public class Airport {
         return experimentalPlanes;
     }
 
-    public Airport sortByMaxDistance() {
-        Collections.sort(planes, new Comparator<Plane>() {
-            public int compare(Plane o1, Plane o2) {
-                return o1.GetMaxFlightDistance() - o2.GetMaxFlightDistance();
-            }
-        });
-        return this;
+
+    public List<? extends Plane> sortByMaxDistance(List<? extends Plane> planes) {
+        for (Plane plane :
+                planes) {
+            Collections.sort(planes, new Comparator<Plane>() {
+                public int compare(Plane o1, Plane o2) {
+                    return o1.getMaxFlightDistance() - o2.getMaxFlightDistance();
+                }
+            });
+        }
+        return planes;
     }
 
 
-    public Airport sortByMaxSpeed() {
-        Collections.sort(planes, new Comparator<Plane>() {
-            @Override
-            public int compare(Plane o1, Plane o2) {
-                return o1.getMaxSpeed() - o2.getMaxSpeed();
-            }
-        });
-        return this;
+    public List<? extends Plane> sortByMaxSpeed(List<? extends Plane> planes) {
+        for (Plane plane :
+                planes) {
+            Collections.sort(planes, new Comparator<Plane>() {
+                @Override
+                public int compare(Plane o1, Plane o2) {
+                    return o1.getMaxSpeed() - o2.getMaxSpeed();
+                }
+            });
+        }
+        return planes;
     }
 
-    public Airport sortByMaxLoadCapacity() {
-        Collections.sort(planes, new Comparator<Plane>() {
-            public int compare(Plane o1, Plane o2) {
-                return o1.getMinLoadCapacity() - o2.getMinLoadCapacity();
-            }
-        });
-        return this;
+    public List<? extends Plane> sortByMaxLoadCapacity(List<? extends Plane> planes) {
+        for (Plane plane :
+                planes) {
+            Collections.sort(planes, new Comparator<Plane>() {
+                public int compare(Plane o1, Plane o2) {
+                    return o1.getMaxLoadCapacity() - o2.getMaxLoadCapacity();
+                }
+            });
+        }
+        return planes;
     }
 
     public List<? extends Plane> getPlanes() {
@@ -125,7 +168,7 @@ public class Airport {
     @Override
     public String toString() {
         return "Airport{" +
-                "Planes=" + planes.toString() +
+                "planes=" + planes.toString() +
                 '}';
     }
 
@@ -133,5 +176,4 @@ public class Airport {
     public Airport(List<? extends Plane> planes) throws NonMilitaryPlainException {
         this.planes = planes;
     }
-
 }
