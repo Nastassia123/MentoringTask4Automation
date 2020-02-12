@@ -27,21 +27,33 @@ public class Runner {
             new MilitaryPlane("C-130 Hercules", 650, 5000, 110000, MilitaryType.TRANSPORT)
     );
 
-    public static void main(String[] args) {
-        try {
-            Airport airport = new Airport(planes);
-            Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
-            Airport passengerAirport = new Airport(airport.getPassengersPlane());
-            LOGGER.info("Military airport sorted by max distance: " + militaryAirport
-                    .sortByMaxDistance(planes)
-                    .toString());
-            LOGGER.info("Passenger airport sorted by max speed: " + passengerAirport
-                    .sortByMaxSpeed(planes)
-                    .toString());
-            LOGGER.info("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
-        } catch (NonMilitaryPlainException e) {
-            LOGGER.info(e.getMessage());
-        }
+    public void defineAirportByMaxDistance(Airport airport, Airport militaryAirport) {
+        LOGGER.info("Military airport sorted by max distance: " + militaryAirport
+                .sortByMaxDistance(planes)
+                .toString());
     }
 
+    public void defineAirportByMaxSpeed(Airport passengerAirport) {
+
+        LOGGER.info("Passenger airport sorted by max speed: " + passengerAirport
+                .sortByMaxSpeed(planes)
+                .toString());
+    }
+
+
+    public void defineAirportByMaxPassangerCapacity(Airport passengerAirport) {
+        LOGGER.info("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
+    }
+
+    public static void main(String[] args) throws NonMilitaryPlainException {
+        Runner runner = new Runner();
+        Airport airport = new Airport(planes);
+        Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
+        Airport passengerAirport = new Airport(airport.getPassengerPlane());
+        runner.defineAirportByMaxDistance(airport, militaryAirport);
+        runner.defineAirportByMaxPassangerCapacity(passengerAirport);
+        runner.defineAirportByMaxSpeed(passengerAirport);
+    }
 }
+
+
