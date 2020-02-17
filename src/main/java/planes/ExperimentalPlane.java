@@ -4,8 +4,9 @@ import models.ClassificationLevel;
 import models.ExperimentalTypes;
 
 import java.util.Objects;
+import java.util.function.Function;
 
-public class ExperimentalPlane extends Plane {
+public class ExperimentalPlane extends Plane  {
 
     private ExperimentalTypes experimentalTypes;
     private ClassificationLevel classificationLevel;
