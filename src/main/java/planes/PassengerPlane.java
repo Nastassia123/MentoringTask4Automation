@@ -13,6 +13,11 @@ public class PassengerPlane extends Plane {
     }
 
 
+
+    public PassengerPlane comparePlanesByCapacity(PassengerPlane plane1, PassengerPlane plane2) {
+        return plane1.getPassengersCapacity() > plane2.getPassengersCapacity() ? plane1 : plane2;
+    }
+
     public int getPassengersCapacity() {
         return passengersCapacity;
     }
