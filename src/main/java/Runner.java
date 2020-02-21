@@ -1,13 +1,10 @@
-import exceptions.NonMilitaryPlainException;
 import models.MilitaryType;
-import planes.MilitaryPlane;
-import planes.PassengerPlane;
-import planes.Plane;
+import Planes.MilitaryPlane;
+import Planes.PassengerPlane;
+import Planes.Plane;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class Runner {
     static List<Plane> planes = Arrays.asList(
@@ -27,32 +24,17 @@ public class Runner {
             new MilitaryPlane("C-130 Hercules", 650, 5000, 110000, MilitaryType.TRANSPORT)
     );
 
-    private static void defineAirportByMaxDistance(Airport airport, Airport militaryAirport) {
-        LOGGER.info("Military airport sorted by max distance: " + militaryAirport
-                .sortByMaxDistance(planes)
-                .toString());
-    }
-
-    private static void defineAirportByMaxSpeed(Airport passengerAirport) {
-
-        LOGGER.info("Passenger airport sorted by max speed: " + passengerAirport
-                .sortByMaxSpeed(planes)
-                .toString());
-    }
-
-
-    private static void defineAirportByMaxPassengerCapacity(Airport passengerAirport) {
-        LOGGER.info("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
-    }
-
     public static void main(String[] args) {
         Airport airport = new Airport(planes);
-        Airport militaryAirport = new Airport(airport.getMilitaryPlanesByType(MilitaryType.BOMBER));
-        Airport passengerAirport = new Airport(airport.getPassengerPlanes());
-        defineAirportByMaxDistance(airport, militaryAirport);
-        defineAirportByMaxPassengerCapacity(passengerAirport);
-        defineAirportByMaxSpeed(passengerAirport);
+        Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
+        Airport passengerAirport = new Airport(airport.getPasPl());
+        System.out.println("Military airport sorted by max distance: " + militaryAirport
+                .sortByMaxDistance()
+                .toString());
+        System.out.println("Passenger airport sorted by max speed: " + passengerAirport
+                .sortByMaxSpeed()
+                .toString());
+
+        System.out.println("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
     }
 }
-
-
