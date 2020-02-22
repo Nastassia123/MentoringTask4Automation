@@ -67,18 +67,12 @@ public class Airport {
     public PassengerPlane getPassengerPlaneWithMaxPassengersCapacity() {
         List<PassengerPlane> passengerPlanes = getPassengerPlane();
         PassengerPlane planeWithMaxCapacity = passengerPlanes.get(0);
-        for (int i = 0; i < passengerPlanes.size(); i++) {
-            planeWithMaxCapacity = comparePlanesByCapacity(planeWithMaxCapacity, planeWithMaxCapacity);
-        }
-       return  planeWithMaxCapacity;
-    }
-
-    public PassengerPlane comparePlanesByCapacity(PassengerPlane plane1, PassengerPlane plane2) {
-        return plane1.getPassengersCapacity() > plane2.getPassengersCapacity() ? plane1 : plane2;
+        planeWithMaxCapacity = Collections.max(passengerPlanes, Comparator.comparing(PassengerPlane::getPassengersCapacity));
+        return planeWithMaxCapacity;
     }
 
 
-    public List getMilitaryPlanesByType(MilitaryType type)  {
+    public List<MilitaryPlane> getMilitaryPlanesByType(MilitaryType type) {
         List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
         List militaryPlanesByType = new ArrayList<>();
         for (int i = 0; i < militaryPlanes.size(); i++) {
@@ -119,7 +113,6 @@ public class Airport {
         }
         return bomberMilitaryPlanes;
     }
-
 
 
     public List<ExperimentalPlane> getExperimentalPlanes() {
