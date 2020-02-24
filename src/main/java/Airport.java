@@ -7,14 +7,12 @@ import planes.Plane;
 
 import java.util.*;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
-
 
 public class Airport {
     private List<? extends Plane> planes;
 
 
-    public List<PassengerPlane> getPassengerPlane() {
+    public List<PassengerPlane> getPassengerPlanes() {
         List<PassengerPlane> passengersPlaneList = new ArrayList<>();
         planes.forEach(plane -> {
             if (isPassengerPlane(plane)) {
@@ -25,52 +23,26 @@ public class Airport {
     }
 
 
-    public boolean isPassengerPlane(Plane plane) {
-        boolean isPasenger = false;
-        if (plane instanceof PassengerPlane) {
-            isPasenger = true;
-        } else {
-            LOGGER.info("Plane's model is not passenger - will be skipped");
-        }
-        return isPasenger;
+    private boolean isPassengerPlane(Plane plane) {
+        return (plane instanceof PassengerPlane) ? true : false;
     }
 
-
-    public List<MilitaryPlane> getMilitaryPlanes() {
-        List<MilitaryPlane> militaryPlanes = new ArrayList<MilitaryPlane>();
-        planes.forEach(plane ->
-        {
-            if (isMilitaryPlane(plane)) {
+    public List<MilitaryPlane> getMilitaryPlanes()  {
+        List<MilitaryPlane> militaryPlanes = new ArrayList<>();
+        for (Plane plane : planes) {
+            if (plane instanceof MilitaryPlane) {
                 militaryPlanes.add((MilitaryPlane) plane);
-            } else {
-                try {
-                    throw new NonMilitaryPlainException("Plane is not military");
-                } catch (NonMilitaryPlainException e) {
-                    LOGGER.info(e.getMessage());
-                }
             }
-        });
+        }
         return militaryPlanes;
     }
 
 
-    protected boolean isMilitaryPlane(Plane plane) {
-        boolean isMilitaryPlane = false;
-        if (plane instanceof MilitaryPlane) {
-            isMilitaryPlane = true;
-        } else {
-            LOGGER.info("Plane is not military");
-        }
-        return isMilitaryPlane;
-    }
-
     public PassengerPlane getPassengerPlaneWithMaxPassengersCapacity() {
-        List<PassengerPlane> passengerPlanes = getPassengerPlane();
-        PassengerPlane planeWithMaxCapacity = passengerPlanes.get(0);
-        planeWithMaxCapacity = Collections.max(passengerPlanes, Comparator.comparing(PassengerPlane::getPassengersCapacity));
-        return planeWithMaxCapacity;
-    }
+        List<PassengerPlane> passengerPlanes = getPassengerPlanes();
+        return Collections.max(passengerPlanes, Comparator.comparing(PassengerPlane::getPassengersCapacity));
 
+    }
 
     public List<MilitaryPlane> getMilitaryPlanesByType(MilitaryType type) {
         List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
@@ -89,36 +61,12 @@ public class Airport {
         return plane.getType() == militaryType ? true : false;
     }
 
-    public List<MilitaryPlane> findInCycleMilitaryPlane
-            (List<MilitaryPlane> militaryPlanes, List<MilitaryPlane> transportMilitaryPlanes) {
-        for (int i = 0; i < getMilitaryPlanes().size(); i++) {
-            MilitaryPlane plane = militaryPlanes.get(i);
-            if (plane.getType() == MilitaryType.TRANSPORT) {
-                transportMilitaryPlanes.add(plane);
-            }
-        }
-        return transportMilitaryPlanes;
-    }
-
-
-    public List<MilitaryPlane> findInCycleBomberMilitaryPlanes
-            (List<MilitaryPlane> militaryPlanes, List<MilitaryPlane> bomberMilitaryPlanes) {
-        {
-            for (int i = 0; i < getMilitaryPlanes().size(); i++) {
-                MilitaryPlane plane = militaryPlanes.get(i);
-                if (plane.getType() == MilitaryType.BOMBER) {
-                    bomberMilitaryPlanes.add(plane);
-                }
-            }
-        }
-        return bomberMilitaryPlanes;
-    }
-
 
     public List<ExperimentalPlane> getExperimentalPlanes() {
         List<ExperimentalPlane> experimentalPlanes = new ArrayList<>();
         return findInCycleExperimentalPlanes(experimentalPlanes);
     }
+
 
     public List<ExperimentalPlane> findInCycleExperimentalPlanes(List<ExperimentalPlane> experimentalPlanes) {
         planes.forEach(plane -> {
@@ -133,6 +81,7 @@ public class Airport {
     public List<? extends Plane> sortByMaxDistance(List<? extends Plane> planes) {
         planes.forEach(plane -> {
             Collections.sort(planes, new Comparator<Plane>() {
+                @Override
                 public int compare(Plane o1, Plane o2) {
                     return o1.getMaxFlightDistance() - o2.getMaxFlightDistance();
                 }
@@ -169,13 +118,6 @@ public class Airport {
         return planes;
     }
 
-    private void print(Collection<? extends Plane> collection) {
-        Iterator<? extends Plane> iterator = collection.iterator();
-        while (iterator.hasNext()) {
-            Plane plane = iterator.next();
-            System.out.println(plane);
-        }
-    }
 
     @Override
     public String toString() {

@@ -27,13 +27,15 @@ public class Runner {
             new MilitaryPlane("C-130 Hercules", 650, 5000, 110000, MilitaryType.TRANSPORT)
     );
 
-    public void defineAirportByMaxDistance(Airport airport, Airport militaryAirport) {
+
+    private static void defineAirportByMaxDistance(Airport militaryAirport) {
         LOGGER.info("Military airport sorted by max distance: " + militaryAirport
                 .sortByMaxDistance(planes)
                 .toString());
+
     }
 
-    public void defineAirportByMaxSpeed(Airport passengerAirport) {
+    private static void defineAirportByMaxSpeed(Airport passengerAirport) {
 
         LOGGER.info("Passenger airport sorted by max speed: " + passengerAirport
                 .sortByMaxSpeed(planes)
@@ -41,18 +43,18 @@ public class Runner {
     }
 
 
-    public void defineAirportByMaxPassangerCapacity(Airport passengerAirport) {
+    private static void defineAirportByMaxPassengerCapacity(Airport passengerAirport) {
         LOGGER.info("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
     }
 
-    public static void main(String[] args) throws NonMilitaryPlainException {
-        Runner runner = new Runner();
+    public static void main(String[] args) {
+
         Airport airport = new Airport(planes);
-        Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
-        Airport passengerAirport = new Airport(airport.getPassengerPlane());
-        runner.defineAirportByMaxDistance(airport, militaryAirport);
-        runner.defineAirportByMaxPassangerCapacity(passengerAirport);
-        runner.defineAirportByMaxSpeed(passengerAirport);
+        Airport militaryAirport = new Airport(airport.getMilitaryPlanesByType(MilitaryType.BOMBER));
+        Airport passengerAirport = new Airport(airport.getPassengerPlanes());
+        defineAirportByMaxDistance(militaryAirport);
+        defineAirportByMaxPassengerCapacity(passengerAirport);
+        defineAirportByMaxSpeed(passengerAirport);
     }
 }
 

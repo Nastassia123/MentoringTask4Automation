@@ -12,8 +12,6 @@ public class PassengerPlane extends Plane {
         this.passengersCapacity = passengersCapacity;
     }
 
-
-
     public PassengerPlane comparePlanesByCapacity(PassengerPlane plane1, PassengerPlane plane2) {
         return plane1.getPassengersCapacity() > plane2.getPassengersCapacity() ? plane1 : plane2;
     }
@@ -28,7 +26,6 @@ public class PassengerPlane extends Plane {
                 ", passengersCapacity=" + passengersCapacity +
                         '}');
     }
-
 
     @Override
     public boolean equals(Object o) {
