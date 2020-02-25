@@ -1,11 +1,14 @@
-import exceptions.NonMilitaryPlainException;
 import models.MilitaryType;
 import planes.ExperimentalPlane;
 import planes.MilitaryPlane;
 import planes.PassengerPlane;
 import planes.Plane;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Airport {
@@ -27,7 +30,7 @@ public class Airport {
         return (plane instanceof PassengerPlane) ? true : false;
     }
 
-    public List<MilitaryPlane> getMilitaryPlanes()  {
+    public List<MilitaryPlane> getMilitaryPlanes() {
         List<MilitaryPlane> militaryPlanes = new ArrayList<>();
         for (Plane plane : planes) {
             if (plane instanceof MilitaryPlane) {
@@ -39,21 +42,12 @@ public class Airport {
 
 
     public PassengerPlane getPassengerPlaneWithMaxPassengersCapacity() {
-        List<PassengerPlane> passengerPlanes = getPassengerPlanes();
-        return Collections.max(passengerPlanes, Comparator.comparing(PassengerPlane::getPassengersCapacity));
-
+        return Collections.max(getPassengerPlanes(), Comparator.comparing(PassengerPlane::getPassengersCapacity));
     }
 
     public List<MilitaryPlane> getMilitaryPlanesByType(MilitaryType type) {
-        List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
-        List militaryPlanesByType = new ArrayList<>();
-        for (int i = 0; i < militaryPlanes.size(); i++) {
-            MilitaryPlane militaryPlain = militaryPlanes.get(i);
-            if (isExpectedMilitaryPlaneType(militaryPlain, type)) {
-                militaryPlanesByType.add(militaryPlain);
-            }
-        }
-        return militaryPlanesByType;
+        return getMilitaryPlanes().stream().filter(plane ->
+                isExpectedMilitaryPlaneType(plane, type)).collect(Collectors.toList());
     }
 
 
