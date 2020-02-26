@@ -69,7 +69,7 @@ public class AirportTest {
 
 
     @Test
-    public void getPlanesList_ReturnPlaneWithMaxLoadCapacity()  {
+    public void getPlanesList_ReturnPlaneWithMaxPassengerCapacity_True()  {
         Airport airport = new Airport(planes);
         PassengerPlane expectedPlaneWithMaxPassengersCapacity = airport.getPassengerPlaneWithMaxPassengersCapacity();
         Assert.assertEquals(expectedPlaneWithMaxPassengersCapacity, planeWithMaxPassengerCapacity);
@@ -77,7 +77,7 @@ public class AirportTest {
 
 
     @Test
-    public void getAtLeastOneBomberPlane_ReturnBombersInMilitaryPlanes(){
+    public void getMilitaryPlanes_PlanesOfBomberType_True(){
         Airport airport = new Airport(planes);
         List<MilitaryPlane> bomberMilitaryPlanes = airport.getMilitaryPlanesByType(MilitaryType.BOMBER);
         Assert.assertTrue(isPlanesListContainsOnlyMilitaryBombers(bomberMilitaryPlanes));
@@ -86,7 +86,7 @@ public class AirportTest {
 
 
     @Test
-    public void getExperimentalPlanes_ReturnClassificationLevelHigherThanUnclassified()  {
+    public void getExperimentalPlanes_IsListContainsUnclassifiedPlanes_False()  {
         Airport airport = new Airport(planes);
         List<ExperimentalPlane> experimentalPlanes = airport.getExperimentalPlanes();
         Assert.assertFalse(isContainsUnclassifiedPlane(experimentalPlanes));
@@ -95,7 +95,7 @@ public class AirportTest {
 
 
     @Test
-    public void getPlanesList_ReturnSortedByLoadCapacity() {
+    public void getPlanesList_PlanesSortedByLoadCapacity_True() {
         Airport airport = new Airport(planes);
         airport.sortByMaxLoadCapacity(planes);
         List<? extends Plane> planesSortedByMaxLoadCapacity = airport.getPlanes();
@@ -103,7 +103,7 @@ public class AirportTest {
     }
 
     @Test
-    public void getTransportMilitaryPlanesByType_ReturnNonEmptyList() {
+    public void getMilitaryPlanes_ListDoesntContainTransportPlanes_False() {
         List transportMilitaryPlanes = new Airport(planes).getMilitaryPlanesByType(MilitaryType.TRANSPORT);
         Assert.assertFalse(transportMilitaryPlanes.isEmpty());
     }
